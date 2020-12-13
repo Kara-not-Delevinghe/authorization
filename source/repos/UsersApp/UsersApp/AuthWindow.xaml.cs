@@ -28,6 +28,8 @@ namespace UsersApp
         {
             string login = textBoxLogin.Text.Trim();
             string pass = passBox.Password.Trim();
+            string role = textBoxRole.Text.Trim();
+
 
             if (login.Length < 5)
             {
@@ -39,26 +41,59 @@ namespace UsersApp
                 passBox.ToolTip = "Это поле введено не корректно!";
                 passBox.Background = Brushes.PowderBlue;
             }
-            else {
+            else if (role.Length < 5 )
+            {
+                textBoxRole.ToolTip = "Это поле введено не корректно!";
+                textBoxRole.Background = Brushes.PowderBlue;
+            }
+
+            else if (role == "Администратор")
+            {
+                AdminWindow adminWindow = new AdminWindow();
+                adminWindow.Show();
+                Hide();
+            }
+            else if (role == "Менеджер")
+            {
+                ManagerWindow managerWindow = new ManagerWindow();
+                managerWindow.Show();
+                Hide();
+
+            }
+
+            else if (role == "Сотрудник")
+            {
+                EmployeeWindow employeeWindow = new EmployeeWindow();
+                employeeWindow.Show();
+                Hide();
+
+            }
+
+            else
+            {
                 textBoxLogin.ToolTip = "";
                 textBoxLogin.Background = Brushes.Transparent;
                 passBox.ToolTip = "";
                 passBox.Background = Brushes.Transparent;
+                textBoxRole.ToolTip = "";
+                textBoxRole.Background = Brushes.Transparent;
+
+
 
 
                 User authUser = null;
-                using (ApplicationContext db = new ApplicationContext()) {
+                using (ApplicationContext db = new ApplicationContext())
+                {
 
                     authUser = db.Users.Where(b => b.Login == login && b.Pass ==
-                    pass).FirstOrDefault();
-                
+                    pass && b.Role == role).FirstOrDefault();
+
                 }
 
                 if (authUser != null)
                     MessageBox.Show("Все хорошо!");
                 else
                     MessageBox.Show("Вы ввели что-то некорректно!");
-
 
             }
         }
@@ -68,6 +103,7 @@ namespace UsersApp
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             Hide();
+            
         }
     }
 }
